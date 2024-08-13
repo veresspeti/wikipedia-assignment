@@ -2,24 +2,24 @@
   <mat-card-content>
     <div>
       <mat-form-field class="example-full-width">
-        <mat-label>Filter</mat-label>
+        <mat-label>{{ appLabels.filterInput }}</mat-label>
         <input [formControl]="searchControl" matInput placeholder="">
       </mat-form-field>
       <div>
         <mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{ appLabels.titleHeader }}</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.title}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="snippet">
-            <mat-header-cell *matHeaderCellDef>Snippet</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{ appLabels.snippetHeader }}</mat-header-cell>
             <mat-cell *matCellDef="let element">
               <span #snippetCell [innerHTML]="element.snippet"></span>
               <button (click)="showSnippet(element.snippet)" mat-button>show</button>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="timestamp">
-            <mat-header-cell *matHeaderCellDef>Timestamp</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{ appLabels.timestampHeader }}</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.timestamp | date:'mediumDate'}}</mat-cell>
           </ng-container>
 

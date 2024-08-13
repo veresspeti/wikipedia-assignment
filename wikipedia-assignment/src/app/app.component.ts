@@ -6,6 +6,7 @@ import {SearchResult} from "./interfaces/searchresult";
 import {FormControl} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {SnippetPopupComponent} from "./components/snippet-popup/snippet-popup.component";
+import {labels} from "./utils/labels";
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['title', 'snippet', 'timestamp'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   @ViewChildren('snippetCell') snippetCells!: QueryList<ElementRef>;
-  cellContents: Map<HTMLElement, number> = new Map(); // To store line counts for cells
   searchControl = new FormControl('');
+  appLabels = labels.app;
 
 
   constructor(private wikipediaHttp: WikipediaHttpService, private dialog: MatDialog) {
@@ -29,12 +30,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     ).subscribe((data) => {
       this.data = data;
       this.filteredData = data;
-      console.log(data);
-      this.dataSource.data = this.data.map((item: SearchResult) => ({
-        title: item.sectionTitle ?? item.title,
-        snippet: item.sectionSnippet ?? item.snippet,
-        timestamp: item.timestamp
-      }));
+      this.dataSource.data = this.populateTable(this.data);
     });
   }
 
@@ -43,7 +39,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe((value) => {
-      console.log(value);
       const lowerCaseValue = value?.toLowerCase();
       this.filterResults(lowerCaseValue)
     })
@@ -56,7 +51,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (lineCount > 2) {
           cell.nativeElement.innerHTML = "..."
         }
-        this.cellContents.set(cell.nativeElement, lineCount);
       });
     });
   }
@@ -70,13 +64,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   filterResults(searchWord: string | undefined) {
     if (searchWord === undefined || searchWord.length === 0) {
-      this.dataSource.data = this.data.map((item: SearchResult) => ({
-        title: item.sectionTitle ?? item.title,
-        snippet: item.sectionSnippet ?? item.snippet,
-        timestamp: item.timestamp
-      }));
+      this.dataSource.data = this.populateTable(this.data);
       return;
     }
+
     this.filteredData = this.data.filter((item: SearchResult) => {
       return item.title.toLowerCase().includes(searchWord) ||
         item.sectionTitle?.toLowerCase().includes(searchWord) ||
@@ -84,11 +75,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         item.sectionSnippet?.toLowerCase().includes(searchWord)
 
     })
-    this.dataSource.data = this.filteredData.map((item: SearchResult) => ({
-      title: item.sectionTitle ?? item.title,
-      snippet: item.sectionSnippet ?? item.snippet,
-      timestamp: item.timestamp
-    }));
+    this.dataSource.data = this.populateTable(this.filteredData);
   }
 
   showSnippet(snippet: string) {
@@ -96,5 +83,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       SnippetPopupComponent,
       { data: snippet }
     );
+  }
+
+  private populateTable(searchResults: SearchResult[]): SearchResult[] {
+    return searchResults.map((item: SearchResult) => ({
+      title: item.sectionTitle ?? item.title,
+      snippet: item.sectionSnippet ?? item.snippet,
+      timestamp: item.timestamp
+    }));
   }
 }
