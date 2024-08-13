@@ -15,7 +15,7 @@
             <mat-header-cell *matHeaderCellDef>{{ appLabels.snippetHeader }}</mat-header-cell>
             <mat-cell *matCellDef="let element">
               <span #snippetCell [innerHTML]="element.snippet"></span>
-              <button (click)="showSnippet(element.snippet)" mat-button>show</button>
+              <button (click)="showSnippet(element.snippet)" mat-button>{{ appLabels.showButton }}</button>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="timestamp">

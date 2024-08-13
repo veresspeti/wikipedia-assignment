@@ -3,6 +3,7 @@ export const labels = {
     filterInput: "Filter",
     titleHeader: "Title",
     snippetHeader: "Snippet",
-    timestampHeader: "Timestamp"
+    timestampHeader: "Timestamp",
+    showButton: 'show'
   }
 }
